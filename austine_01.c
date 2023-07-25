@@ -47,9 +47,9 @@ int _printf(const char *format, ...)
 				case 'p':
 					adder = adder + print_pointer(va_arg(args, void *));
 					break;
-				case 'd':
+				/*case 'd':
 				case 'i':
-					adder = adder + print_integer(va_arg(args, int));
+					adder = adder + print_integer(va_arg(args, int));*/
 			}
 		}
 		else
