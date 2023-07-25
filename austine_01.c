@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdarg.h>
-<<<<<<< HEAD
 #include "main.h"
 #include <unistd.h>
 
@@ -24,17 +23,6 @@ int _printf(const char *format, ...)
 
 	va_start(args, format);
 
-=======
-#include <main.h>
-
-
-int _printf(const char *format, ...)
-{
-	va_list args;
-	va_start(args, format);
-
-	int adder = 0;
->>>>>>> 61df4f14742e99f2327e8e131826754c205b0bab
 
 	while (*format)
 	{
@@ -44,7 +32,7 @@ int _printf(const char *format, ...)
 			switch (*format)
 			{
 				case 'c':
-<<<<<<< HEAD
+
 					adder = adder + print_char(va_arg(args, int));
 					break;
 				case 's':
@@ -129,36 +117,4 @@ int print_percent(void)
 {
 	putchar('%');
 	return (1);
-=======
-					putchar(va_arg(args, int));
-					adder++;
-					break;
-				case 's':
-					{
-						char *s = va_arg(args, char *);
-						while (*s)
-						{
-							putchar(*s);
-							s++;
-							adder++;
-						}
-						break;
-					}
-				case '%':
-					putchar ('%');
-					adder++;
-					break;
-			}
-		}
-		else
-			{
-				putchar(*format);
-				adder++;
-			}
-		format++;
-	}
-	va_end(args);
-
-	return adder++;
->>>>>>> 61df4f14742e99f2327e8e131826754c205b0bab
 }
