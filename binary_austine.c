@@ -10,7 +10,7 @@
 int print_binary(int num)
 {
 	int bin[32];
-	int inertia;
+	int inertia = 0;
 	int z;
 
 	if (num == 0)
