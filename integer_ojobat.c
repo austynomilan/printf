@@ -6,7 +6,7 @@
  * Return: The number characters printed
  */
 
-int print_integer(int num)
+int print_integer(int num);
 {
 	int index = 0;
 	int adder = 0;
