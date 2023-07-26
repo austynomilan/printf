@@ -1,3 +1,6 @@
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
+#include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include "main.h"
@@ -20,15 +23,42 @@ int _printf(const char *format, ...)
 {
 	int adder = 0;
 	va_list args;
+	int width = 0;
+	int plus_flag;
+	int space_flag;
+	int hash_flag;
 
 	va_start(args, format);
-
 
 	while (*format)
 	{
 		if (*format == '%')
 		{
 			format++;
+
+			while (*format == '+' || *format == ' ' || *format == '#')
+			{
+				if (*format == '+')
+				{
+					plus_flag = 1;
+				}
+				else if (*format == ' ')
+				{
+					space_flag = 1;
+				}
+				else if (*format == '#')
+				{
+					hash_flag = 1;
+				}
+				format++;
+			}
+
+			while (*format >= '0' && *format <= '9')
+			{
+				width = (width * 10) + (*format - '0');
+				format++;
+			}
+
 			switch (*format)
 			{
 				case 'c':
@@ -42,7 +72,7 @@ int _printf(const char *format, ...)
 					adder = adder + print_percent();
 					break;
 				case 'b':
-					adder = adder + print_binary(va_arg(args, unsigned int));
+					adder = adder + print_binary(va_arg(args, int));
 					break;
 				case 'p':
 					adder = adder + print_pointer(va_arg(args, void *));
@@ -50,6 +80,23 @@ int _printf(const char *format, ...)
 				case 'd':
 				case 'i':
 					adder = adder + print_integer(va_arg(args, int));
+					break;
+				case 'u':
+					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 10, 0, 0);
+					break;
+				case 'o':
+					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 8, 0, 0);
+					break;
+				case 'x':
+					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 16, 1, 1);
+					break;
+				case 'X':
+					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 16, 0, 0);
+					break;
+				case 'S':
+					 adder = adder + print_custom_string(va_arg(args, char *));
+					 break;
+
 			}
 		}
 		else

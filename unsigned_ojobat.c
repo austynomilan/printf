@@ -9,7 +9,6 @@
  */
 
 int print_unsigned_int(unsigned int n, int base, int lowercase)
-
 {
 	char buffer[32];
 	int i = 0;
