@@ -94,8 +94,8 @@ int _printf(const char *format, ...)
 					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 16, 0, 0);
 					break;
 				case 'S':
-					 adder = adder + print_custom_string(va_arg(args, char *));
-					 break;
+					adder = adder + print_custom_string(va_arg(args, char *));
+					break;
 
 			}
 		}
