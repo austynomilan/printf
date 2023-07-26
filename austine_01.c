@@ -2,7 +2,7 @@
 
 void print_buffer(char buffer[], int *buffy_in);
 /**
- * _printf - Printf function
+ * _print - Printf function
  * @format: format.
  * Return: Printed chars.
  */
@@ -10,11 +10,11 @@ void print_buffer(char buffer[], int *buffy_in);
 int _print(const char *format, ...)
 {
 	int w, pnted = 0, pnted_chrs = 0;
-	int flags, width, precesion, size, buffy_in = 0;
+	int flags, width, precision, size, buffy_in = 0;
 	va_list list;
-	char buffer[BUFFER_SIZE];
+	char buffer[BUFF_SIZE];
 
-	IF (format == NULL)
+	if (format == NULL)
 		return (-1);
 
 	va_start(list, format);
@@ -24,7 +24,7 @@ int _print(const char *format, ...)
 		if (format[w] != '%')
 		{
 			buffer[buffy_in++] = format[w];
-			if (buffy_in == BUFFER_SIZE)
+			if (buffy_in == BUFF_SIZE)
 			print_buffer(buffer, &buffy_in);
 
 			pnted_chrs++;
@@ -37,8 +37,8 @@ int _print(const char *format, ...)
 			precision = get_precision(format, &w, list);
 			size = get_size(format, &w);
 			++w;
-			pnted = handle_print(format, &w, list, buffer, flags, width, precision, size);
-		
+			pnted = handle_print(format, &w, list, buffer,
+				flags, width, precision, size);
 			if (pnted == -1)
 				return (-1);
 			pnted_chrs += pnted;
@@ -54,7 +54,7 @@ int _print(const char *format, ...)
 /**
  * print_buffer - Prints the contents of the buffer if it exist
  * @buffer: Array of chars
- * @buff_ind: Index at which to add next char, represents the length.
+ * @buffy_in: Index at which to add next char, represents the length.
  */
 
 void print_buffer(char buffer[], int *buffy_in)
