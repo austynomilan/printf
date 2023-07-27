@@ -22,7 +22,7 @@ int get_width(const char *format, int *i, va_list list)
 		}
 		else if (format[curr_f] == '*')
 		{
-			curr_i++;
+			curr_f++;
 			wdth = va_arg(list, int);
 			break;
 		}
