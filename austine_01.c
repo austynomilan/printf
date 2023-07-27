@@ -1,167 +1,65 @@
-#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-
-#include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include "main.h"
-#include <unistd.h>
 
-#define BUFFER_SIZE 1024
-
-int print_char(int c);
-int print_string(char *s);
-int print_percent(void);
-int print_binary(int num);
-
+void print_buffer(char buffer[], int *buffy_in);
 /**
-  *_printf - Entry point to the program
-  *@format: format pointer
-  *Return: the printed item
-  */
+ * _print - Printf function
+ * @format: format.
+ * Return: Printed chars.
+ */
 
-int _printf(const char *format, ...)
+int _print(const char *format, ...)
 {
-	int adder = 0;
-	va_list args;
-	int width = 0;
-	int plus_flag;
-	int space_flag;
-	int hash_flag;
+	int w, pnted = 0, pnted_chrs = 0;
+	int flags, width, precision, size, buffy_in = 0;
+	va_list list;
+	char buffer[BUFF_SIZE];
 
-	va_start(args, format);
+	if (format == NULL)
+		return (-1);
 
-	while (*format)
+	va_start(list, format);
+
+	for (w = 0; format && format[w] != '\0'; w++)
 	{
-		if (*format == '%')
+		if (format[w] != '%')
 		{
-			format++;
+			buffer[buffy_in++] = format[w];
+			if (buffy_in == BUFF_SIZE)
+			print_buffer(buffer, &buffy_in);
 
-			while (*format == '+' || *format == ' ' || *format == '#')
-			{
-				if (*format == '+')
-				{
-					plus_flag = 1;
-				}
-				else if (*format == ' ')
-				{
-					space_flag = 1;
-				}
-				else if (*format == '#')
-				{
-					hash_flag = 1;
-				}
-				format++;
-			}
-
-			while (*format >= '0' && *format <= '9')
-			{
-				width = (width * 10) + (*format - '0');
-				format++;
-			}
-
-			switch (*format)
-			{
-				case 'c':
-
-					adder = adder + print_char(va_arg(args, int));
-					break;
-				case 's':
-					adder = adder + print_string(va_arg(args, char *));
-					break;
-				case '%':
-					adder = adder + print_percent();
-					break;
-				case 'b':
-					adder = adder + print_binary(va_arg(args, int));
-					break;
-				case 'p':
-					adder = adder + print_pointer(va_arg(args, void *));
-					break;
-				case 'd':
-				case 'i':
-					adder = adder + print_integer(va_arg(args, int));
-					break;
-				case 'u':
-					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 10, 0, 0);
-					break;
-				case 'o':
-					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 8, 0, 0);
-					break;
-				case 'x':
-					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 16, 1, 1);
-					break;
-				case 'X':
-					adder = adder + print_unsigned_int(va_arg(args, unsigned int), 16, 0, 0);
-					break;
-				case 'S':
-					adder = adder + print_custom_string(va_arg(args, char *));
-					break;
-
-			}
+			pnted_chrs++;
 		}
 		else
 		{
-			adder = adder + print_char(*format);
-		}
-		format++;
-	}
-	va_end(args);
-	return (adder);
-}
-
-/**
-  *print_char - Entry point to the program
-  *@c: the charater as paremter
-  *Return: Always 1 (success)
-  */
-
-int print_char(int c)
-{
-	static char buffer[BUFFER_SIZE];
-	static size_t x;
-
-	if (x >= sizeof(buffer))
-	{
-		write(STDOUT_FILENO, buffer, x);
-			x = 0;
-	}
-	buffer[x++] = c;
-	return (1);
-}
-
-/**
-  *print_string - Entry point to the program
-  *@s: pointer to string as parameter
-  *Return: always 0 (success)
-  */
-
-
-int print_string(char *s)
-{
-	static char buffer[BUFFER_SIZE];
-	int increment = 0;
-	static size_t x;
-
-	while (*s)
-	{
-		buffer[x++] = *s++;
-		increment++;
-		if (x  == sizeof(buffer))
-		{
-			write(STDOUT_FILENO, buffer, sizeof(buffer));
-			x = 0;
+			print_buffer(buffer, &buffy_in);
+			flags = get_flags(format, &w);
+			width = get_width(format, &w, list);
+			precision = get_precision(format, &w, list);
+			size = get_size(format, &w);
+			++w;
+			pnted = handle_print(format, &w, list, buffer,
+				flags, width, precision, size);
+			if (pnted == -1)
+				return (-1);
+			pnted_chrs += pnted;
 		}
 	}
-	return (increment);
+	print_buffer(buffer, &buffy_in);
+
+	va_end(list);
+
+	return (pnted_chrs);
 }
 
 /**
-  *print_percent - Entry point to the program
-  *Return: ...
-  */
+ * print_buffer - Prints the contents of the buffer if it exist
+ * @buffer: Array of chars
+ * @buffy_in: Index at which to add next char, represents the length.
+ */
 
-int print_percent(void)
+void print_buffer(char buffer[], int *buffy_in)
 {
-	putchar('%');
-	return (1);
+	if (*buffy_in > 0)
+		write(1, &buffer[0], *buffy_in);
+	*buffy_in = 0;
 }
